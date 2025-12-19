@@ -45,7 +45,7 @@ import org.testng.asserts.SoftAssert;
 public class StandAlone {
 
 	public void test() throws IOException {
-		/*
+		/*Pankil
 		 * String url = "https://rahulshettyacademy.com/AutomationPractice/";
 		 * 
 		 * // Proxy proxy = new Proxy(); // proxy.setHttpProxy("ipadress:9898");
@@ -114,18 +114,6 @@ public class StandAlone {
 		 * waitE.until(ExpectedConditions.alertIsPresent());
 		 */
 	}
-	
-	public void downloadData(WebDriver driver) {
-		
-	}
-
-	public void upload(WebDriver driver) {
-		
-		WebElement uploadBtn = driver.findElement(By.id("fileinput"));
-		
-		
-		
-	}
 
 	public static void main(String[] args) throws InvalidFormatException, IOException {
 		
@@ -137,7 +125,6 @@ public class StandAlone {
 		
 		StandAlone standAlone = new StandAlone();
 		
-		standAlone.upload(driver);
 
 	}
 
