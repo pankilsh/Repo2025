@@ -63,6 +63,7 @@ public class SubmitOrderTest extends BaseTest {
 	public void test(HashMap<String, String> input) throws InterruptedException {
 		//landingPage.loginToApplication(input.get("email"), input.get("password"));
 		System.out.println(input.get("password"));
+		Assert.assertTrue(false);
 	}
 
 }

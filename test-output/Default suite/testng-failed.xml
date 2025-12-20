@@ -6,7 +6,7 @@
       <class name="seleniumFrameworkDesign.Tests.SubmitOrderTest">
         <methods>
           <include name="closeApplication"/>
-          <include name="test"/>
+          <include name="test" invocation-numbers="0 1 2 3 4"/>
           <include name="launchApplication"/>
         </methods>
       </class> <!-- seleniumFrameworkDesign.Tests.SubmitOrderTest -->

@@ -12,7 +12,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 
 public class Listners extends BaseTest implements ITestListener{
-
+	
 	ExtentReports extent = ExtentReporterNG.getExtentReport();
 	ExtentTest test;
 	ThreadLocal<ExtentTest> testThread = new ThreadLocal<ExtentTest>();
@@ -31,7 +31,6 @@ public class Listners extends BaseTest implements ITestListener{
 		// TODO Auto-generated method stub
 		ITestListener.super.onTestSuccess(result);
 		testThread.get().log(Status.PASS, "Test is passed");
-		
 	}
 
 	@Override
@@ -40,8 +39,9 @@ public class Listners extends BaseTest implements ITestListener{
 		ITestListener.super.onTestFailure(result);
 		
 		testThread.get().log(Status.FAIL, result.getThrowable());
+		
 		try {
-			driver = (WebDriver)result.getTestClass().getRealClass().getField("driver").get(result.getInstance());
+			this.driver = (WebDriver)result.getTestClass().getRealClass().getField("driver").get(result.getInstance());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

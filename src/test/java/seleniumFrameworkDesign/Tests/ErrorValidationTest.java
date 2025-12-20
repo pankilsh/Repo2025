@@ -16,7 +16,7 @@ public class ErrorValidationTest extends BaseTest{
 		
 		landingPage.loginToApplication(user, password);
 		
-		String expectedError = "Incorrect email or password.";
+		String expectedError = "Incorrect email or password. ";
 		String actualError = landingPage.getErrorMessage();
 		
 		Assert.assertEquals(actualError, expectedError);
