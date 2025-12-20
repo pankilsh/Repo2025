@@ -28,11 +28,14 @@ public class LandingPage extends AbstractComponent {
 	@FindBy(id = "login")
 	WebElement loginBtn;
 	
-	@FindBy(className = "forgot-password-link")
+	@FindBy(linkText = "Forgot password?")
 	WebElement forgotPass;
 	
 	@FindBy(css = "div[class*=flyInOut]")
 	WebElement errorMessageEl;
+	
+	@FindBy(css = "a.btn1")
+	WebElement registerBtn;
 	
 	public ProductCatalougePage loginToApplication(String email, String password) {
 		userEmail.sendKeys(email);
@@ -51,5 +54,14 @@ public class LandingPage extends AbstractComponent {
 		return errorMessageEl.findElement(By.tagName("div")).getText();
 	}
 	
+	public ForgotPasswordPage clickForgotPassword() {
+		forgotPass.click();
+		return new ForgotPasswordPage(driver);
+	}
+	
+	public RegisterPage clickRegister() {
+		registerBtn.click();
+		return new RegisterPage(driver);
+	}
 	
 }
