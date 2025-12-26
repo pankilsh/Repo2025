@@ -1,5 +1,6 @@
 package seleniumFrameworkDesign.TestComponents;
 
+import java.awt.event.KeyAdapter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -19,9 +21,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -52,7 +56,6 @@ public class BaseTest {
 				: property.getProperty("browserName");
 
 		url = property.getProperty("url");
-		
 
 		if (browserName.contains("edge"))
 			driver = new EdgeDriver();
@@ -95,8 +98,6 @@ public class BaseTest {
 		return destinationPath;
 	}
 
-	
-	
 	public List<HashMap<String, String>> getExcelDataToMapMethodOne(String testCaseName, String dataExcelFileName)
 			throws InvalidFormatException, IOException {
 		String excelPath = System.getProperty("user.dir") + "//resources//" + dataExcelFileName + ".xlsx";
@@ -170,13 +171,13 @@ public class BaseTest {
 		workbook.close();
 		return data;
 	}
-	
+
 	public List<HashMap<String, String>> getExcelDataToMapMethodTwo(String testCaseName, String excelFileName)
 			throws InvalidFormatException, IOException {
 		String excelPath = System.getProperty("user.dir") + "//resources//" + excelFileName + ".xlsx";
 		List<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
 		DataFormatter formatter = new DataFormatter();
-		
+
 		XSSFWorkbook workbook = new XSSFWorkbook(new File(excelPath));
 		XSSFSheet sheet = null;
 		int sheetCount = workbook.getNumberOfSheets();
@@ -193,20 +194,20 @@ public class BaseTest {
 		Row firstRow = sheet.getRow(0);
 		int rowCount = sheet.getPhysicalNumberOfRows();
 		int colCount = firstRow.getLastCellNum();
-		String key,value;
+		String key, value;
 		HashMap<String, String> testData = null;
-		
+
 		for (int i = 1; i < rowCount; i++) {
 			testData = new HashMap<String, String>();
 			for (int k = 1; k < colCount; k++) {
-				
+
 				key = formatter.formatCellValue(firstRow.getCell(k));
 				value = formatter.formatCellValue(sheet.getRow(i).getCell(k));
 				testData.put(key, value);
 			}
-			data.add(testData);	
+			data.add(testData);
 		}
-		
+
 		workbook.close();
 		return data;
 
@@ -224,5 +225,17 @@ public class BaseTest {
 	public void closeApplication() {
 		driver.quit();
 	}
+
+	public void openLinkInNewTab(WebElement element) {
+		element.sendKeys(Keys.chord(Keys.CONTROL, Keys.ENTER));
+	}
+
+	public Set<String> openLinkInNewTab(List<WebElement> elements) {
+		for (WebElement element : elements)
+			element.sendKeys(Keys.chord(Keys.CONTROL, Keys.ENTER));
+		
+		return driver.getWindowHandles();
+	}
+	
 
 }
