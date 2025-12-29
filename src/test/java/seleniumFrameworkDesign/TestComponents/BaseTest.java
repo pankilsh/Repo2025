@@ -33,17 +33,20 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import seleniumFrameworkDesign.pageObjects.LandingPage;
+import uploadDownload.pageObjects.UploadDownloadPage;
 
 public class BaseTest {
 
 	public WebDriver driver;
 	public String url;
 	public LandingPage landingPage;
+	public UploadDownloadPage uploadPage;
 
 	public WebDriver initializeDriver() throws IOException {
 
@@ -63,10 +66,12 @@ public class BaseTest {
 			driver = new FirefoxDriver();
 		else {
 			ChromeOptions options = new ChromeOptions();
-			if (browserName.contains("headless"))
+			if (browserName.contains("headless")) {
 				options.addArguments("headless");
+			}
+			options.setAcceptInsecureCerts(true);
 			driver = new ChromeDriver(options);
-			driver.manage().window().setSize(new Dimension(1449, 900));
+			//driver.manage().window().setSize(new Dimension(1449, 900));
 		}
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -213,7 +218,7 @@ public class BaseTest {
 
 	}
 
-	@BeforeMethod(alwaysRun = true)
+	// @BeforeMethod(alwaysRun = true)
 	public LandingPage launchApplication() throws IOException {
 		driver = initializeDriver();
 		landingPage = new LandingPage(driver);
@@ -221,7 +226,16 @@ public class BaseTest {
 		return landingPage;
 	}
 
-	@AfterMethod(alwaysRun = true)
+	@BeforeTest(alwaysRun = true)
+	public UploadDownloadPage launchUploadPage() throws IOException {
+		String url = "https://rahulshettyacademy.com/upload-download-test/index.html";
+		driver = initializeDriver();
+		uploadPage = new UploadDownloadPage(driver);
+		uploadPage.goTo(url);
+		return new UploadDownloadPage(driver);
+	}
+
+	//@AfterMethod(alwaysRun = true)
 	public void closeApplication() {
 		driver.quit();
 	}
@@ -233,9 +247,8 @@ public class BaseTest {
 	public Set<String> openLinkInNewTab(List<WebElement> elements) {
 		for (WebElement element : elements)
 			element.sendKeys(Keys.chord(Keys.CONTROL, Keys.ENTER));
-		
+
 		return driver.getWindowHandles();
 	}
-	
 
 }
