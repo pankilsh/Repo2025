@@ -3,6 +3,7 @@ package seleniumFrameworkDesign.Tests;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,6 +44,19 @@ public class SubmitOrderTest extends BaseTest {
 		return object;
 	}
 
+	@DataProvider(name = "getDataFromDB")
+	public Object[][] getDataFromDB() throws IOException, SQLException {
+		List<HashMap<String, String>> dbData = getDBDataToMap("logindetails");
+
+		Object[][] data = new Object[dbData.size()][1];
+
+		for (int i = 0; i < dbData.size(); i++) {
+			data[i][0] = dbData.get(i);
+		}
+
+		return data;
+	}
+
 	@Test(dataProvider = "getDataFromJson", groups = "purchase")
 	public void addProductToCart(HashMap<String, String> input) throws IOException, InterruptedException {
 
@@ -65,4 +79,11 @@ public class SubmitOrderTest extends BaseTest {
 		// System.out.println(input.get("password"));
 	}
 
+	@Test(dataProvider = "getDataFromDB")
+	public void testDB(HashMap<String, String> input) {
+		for (String key : input.keySet()) {
+			String value = input.get(key);
+			System.out.println("Username : " + key + " and Password : " + value);
+		}
+	}
 }

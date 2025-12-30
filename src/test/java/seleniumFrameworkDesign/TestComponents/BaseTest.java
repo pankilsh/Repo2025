@@ -5,6 +5,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,6 +40,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 
+import com.beust.jcommander.converters.BigDecimalConverter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -71,7 +77,7 @@ public class BaseTest {
 			}
 			options.setAcceptInsecureCerts(true);
 			driver = new ChromeDriver(options);
-			//driver.manage().window().setSize(new Dimension(1449, 900));
+			// driver.manage().window().setSize(new Dimension(1449, 900));
 		}
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -177,6 +183,41 @@ public class BaseTest {
 		return data;
 	}
 
+	public List<HashMap<String, String>> getDBDataToMap(String tableName) throws IOException, SQLException {
+		Properties property = new Properties();
+		FileInputStream fis = new FileInputStream(
+				new File(System.getProperty("user.dir")) + "\\resources\\DBGlobalData.properties");
+		property.load(fis);
+
+		String host = property.getProperty("dbHost");
+		String port = property.getProperty("dbPort");
+		String dbName = property.getProperty("dbName");
+		String dbUser = property.getProperty("dbUser");
+		String dbPassword = property.getProperty("dbPassword");
+
+		String dbURL = "jdbc:mysql://" + host + ":" + port + "//" + dbName;
+
+		Connection dbConnect = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+		Statement statement = dbConnect.createStatement();
+
+		ResultSet result = statement.executeQuery("select * from " + tableName);
+
+		List<HashMap<String, String>> testData = new ArrayList<HashMap<String, String>>();
+		HashMap<String, String> map;
+
+		while (result.next()) {
+			String key = result.getString(1);
+			String value = result.getString(2);
+
+			map = new HashMap<String, String>();
+			map.put(key, value);
+
+			testData.add(map);
+		}
+
+		return testData;
+	}
+
 	public List<HashMap<String, String>> getExcelDataToMapMethodTwo(String testCaseName, String excelFileName)
 			throws InvalidFormatException, IOException {
 		String excelPath = System.getProperty("user.dir") + "//resources//" + excelFileName + ".xlsx";
@@ -235,7 +276,7 @@ public class BaseTest {
 		return new UploadDownloadPage(driver);
 	}
 
-	//@AfterMethod(alwaysRun = true)
+	// @AfterMethod(alwaysRun = true)
 	public void closeApplication() {
 		driver.quit();
 	}
