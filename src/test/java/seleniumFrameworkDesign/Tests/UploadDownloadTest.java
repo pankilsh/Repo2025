@@ -18,9 +18,9 @@ import seleniumFrameworkDesign.TestComponents.BaseTest;
 
 public class UploadDownloadTest extends BaseTest {
 
-	public void updateFruitPriceInExcel(String fruitName, String newPrice)
+	public void updateFruitPriceInExcel(String fruitName, String newPrice, String fileName)
 			throws InvalidFormatException, FileNotFoundException, IOException {
-		String filePath = uploadPage.getDownloadFolder() + "download.xlsx";
+		String filePath = uploadPage.getDownloadFolderPath() + "\\" + fileName;
 		File file = new File(filePath);
 		FileInputStream fis = new FileInputStream(file);
 
@@ -70,16 +70,18 @@ public class UploadDownloadTest extends BaseTest {
 
 	@Test
 	public void uploadFileTest() throws IOException, InvalidFormatException, InterruptedException {
-		uploadPage.downloadFile();
+		
+		uploadPage.deleteAndDownloadFile();
 
 		String fruitName = "Papaya";
 		String newPrice = "500";
+		String fileName = "download.xlsx";
 
 		Thread.sleep(1000);
-		Assert.assertTrue(uploadPage.verifyFileDownload());
-		updateFruitPriceInExcel(fruitName, newPrice);
+		Assert.assertTrue(uploadPage.isFileDownloaded(fileName));
+		updateFruitPriceInExcel(fruitName, newPrice, fileName);
 
-		uploadPage.uploadFile();
+		uploadPage.uploadFile(fileName);
 		uploadPage.waitForToastToAppear();
 		Assert.assertTrue(uploadPage.getToastMessage().equalsIgnoreCase("Updated Excel Data Successfully."));
 		uploadPage.waitForToastToDisappear();

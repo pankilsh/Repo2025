@@ -40,7 +40,12 @@ public class UploadDownloadPage extends AbstractComponent {
 	@FindBy(css = "[id*='row'] div[data-column-id='2']")
 	List<WebElement> fruits;
 
-	public void downloadFile() {
+	public void deleteAndDownloadFile() throws FileNotFoundException, IOException {
+		deleteIfAlreadyPresent("download.xlsx");
+		downloadButton.click();
+	}
+	
+	public void downloadFile() throws FileNotFoundException, IOException {
 		downloadButton.click();
 	}
 
@@ -48,6 +53,7 @@ public class UploadDownloadPage extends AbstractComponent {
 		driver.get(url);
 	}
 
+	@Deprecated
 	public String getDownloadFolder() throws FileNotFoundException, IOException {
 		String globalPropertiesPath = System.getProperty("user.dir") + "\\resources\\GlobalData.properties";
 
@@ -59,12 +65,22 @@ public class UploadDownloadPage extends AbstractComponent {
 		return downloadFolder;
 	}
 
-	public void uploadFile() throws FileNotFoundException, IOException {
-		chooseFile.sendKeys(getDownloadFolder() + "download.xlsx");
+	public String getDownloadFolderPath() {
+		String downloadFilePath = System.getProperty("user.dir") + "\\downloads";
+		return downloadFilePath;
 	}
 
-	public boolean verifyFileDownload() throws FileNotFoundException, IOException {
-		Path path = Paths.get(getDownloadFolder() + "download.xlsx");
+	public void uploadFile(String fileName) throws FileNotFoundException, IOException {
+		chooseFile.sendKeys(getDownloadFolderPath() + "\\" + fileName);
+	}
+
+	public void deleteIfAlreadyPresent(String fileName) throws FileNotFoundException, IOException {
+		Path path = Paths.get(getDownloadFolderPath() + "\\" + fileName);
+		Files.deleteIfExists(path);
+	}
+	
+	public boolean isFileDownloaded(String fileName) {
+		Path path = Paths.get(getDownloadFolderPath() + "\\" + fileName);
 		return Files.exists(path);
 	}
 

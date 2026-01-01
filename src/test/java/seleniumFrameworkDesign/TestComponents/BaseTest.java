@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -34,6 +35,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.Assert;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -60,6 +62,11 @@ public class BaseTest {
 				: property.getProperty("browserName");
 
 		url = property.getProperty("url");
+		
+		String downloadDirectory = System.getProperty("user.dir") + "\\downloads";
+		
+		Map<String, String> prefs = new HashMap<String, String>();
+		prefs.put("download.default_directory", downloadDirectory);
 
 		if (browserName.contains("edge"))
 			driver = new EdgeDriver();
@@ -70,9 +77,10 @@ public class BaseTest {
 			if (browserName.contains("headless")) {
 				options.addArguments("headless");
 			}
+			options.setExperimentalOption("prefs", prefs);
 			options.setAcceptInsecureCerts(true);
+
 			driver = new ChromeDriver(options);
-			// driver.manage().window().setSize(new Dimension(1449, 900));
 		}
 		driver.manage().window().maximize();
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
@@ -271,7 +279,7 @@ public class BaseTest {
 		return new UploadDownloadPage(driver);
 	}
 
-	// @AfterMethod(alwaysRun = true)
+	@AfterTest(alwaysRun = true)
 	public void closeApplication() {
 		driver.quit();
 	}
